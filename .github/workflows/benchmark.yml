@@ -1,4 +1,4 @@
-name: Benchmark of ${{ github.event.inputs.project }} in ${{ github.event.inputs.repository}}
+name: Benchmark
 on:
   workflow_dispatch:
     inputs:
