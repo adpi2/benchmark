@@ -1,0 +1,110 @@
+name: Benchmark
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        required: true
+      project:
+        required: true
+
+jobs:
+  sbt-perf:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        jvm: ['adopt:1.8.0-292', 'adopt:1.11.0.11', 'temurin:1.17.0.3']
+    name: sbt perf on ${{ matrix.os }} -- ${{ matrix.jvm }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.inputs.repository }}
+    - uses: coursier/setup-action@v1.2.0
+      with:
+        jvm: ${{ matrix.jvm }}
+        apps: sbtn
+    - name: Warming
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+    - name: Measure 1
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+    - name: Measure 2
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+    - name: Measure 3
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+    - name: Measure 4
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+    - name: Measure 5
+      run: |
+        sbtn ${{ github.event.inputs.project }}/clean
+        sbtn ${{ github.event.inputs.project }}/compile
+  bloop-perf:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        jvm: ['adopt:1.8.0-292', 'adopt:1.11.0.11', 'temurin:1.17.0.3']
+    name: Bloop perf on ${{ matrix.os }} -- ${{ matrix.jvm }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.inputs.repository }}
+    - uses: coursier/setup-action@v1.2.0
+      with:
+        jvm: ${{ matrix.jvm }}
+        apps: sbt bloop
+    - name: Install Bloop
+      run: |
+        echo 'addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.5.4")' > project/bloop.sbt
+        sbt bloopInstall
+    - name: Warming
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+    - name: Measure 1
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+    - name: Measure 2
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+    - name: Measure 3
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+    - name: Measure 4
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
+    - name: Measure 5
+      run: |
+        bloop clean ${{ github.event.inputs.project }}
+        bloop compile ${{ github.event.inputs.project }}
