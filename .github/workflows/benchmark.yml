@@ -6,7 +6,11 @@ on:
         required: true
       project:
         required: true
-
+      sbt-version:
+        default: 1.7.2
+      bloop-version:
+        default: 1.5.4
+        
 jobs:
   sbt-perf:
     strategy:
@@ -24,6 +28,9 @@ jobs:
       with:
         jvm: ${{ matrix.jvm }}
         apps: sbtn
+    - name: Setup sbt version
+      run: |
+      echo sbt.version=${{ github.event.inputs.sbt-version }} > project/build.properties
     - name: Warming
       run: |
         sbtn ${{ github.event.inputs.project }}/clean
@@ -71,10 +78,10 @@ jobs:
     - uses: coursier/setup-action@v1.2.0
       with:
         jvm: ${{ matrix.jvm }}
-        apps: sbt bloop
+        apps: sbt 'bloop:${{ github.event.inputs.bloop-version }}'
     - name: Install Bloop
       run: |
-        echo 'addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.5.4")' > project/bloop.sbt
+        echo 'addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "${{ github.event.inputs.bloop-version }}")' > project/bloop.sbt
         sbt bloopInstall
     - name: Warming
       run: |
