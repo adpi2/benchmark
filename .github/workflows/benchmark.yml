@@ -30,7 +30,7 @@ jobs:
         apps: sbtn
     - name: Setup sbt version
       run: |
-      echo sbt.version=${{ github.event.inputs.sbt-version }} > project/build.properties
+      'echo sbt.version=${{ github.event.inputs.sbt-version }} > project/build.properties'
     - name: Warming
       run: |
         sbtn ${{ github.event.inputs.project }}/clean
