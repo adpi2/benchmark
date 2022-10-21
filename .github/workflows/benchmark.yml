@@ -78,7 +78,7 @@ jobs:
     - uses: coursier/setup-action@v1.2.0
       with:
         jvm: ${{ matrix.jvm }}
-        apps: sbt 'bloop:${{ github.event.inputs.bloop-version }}'
+        apps: 'sbt bloop:${{ github.event.inputs.bloop-version }}'
     - name: Install Bloop
       run: |
         echo 'addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "${{ github.event.inputs.bloop-version }}")' > project/bloop.sbt
