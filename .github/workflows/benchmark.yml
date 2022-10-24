@@ -4,6 +4,8 @@ on:
     inputs:
       repository:
         required: true
+      ref:
+        default: ''
       project:
         required: true
       sbt-version:
@@ -24,6 +26,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         repository: ${{ github.event.inputs.repository }}
+        ref: ${{ github.event.inputs.ref }}
     - uses: coursier/setup-action@v1.2.0
       with:
         jvm: ${{ matrix.jvm }}
@@ -75,6 +78,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         repository: ${{ github.event.inputs.repository }}
+        ref: ${{ github.event.inputs.ref }}
     - uses: coursier/setup-action@v1.2.0
       with:
         jvm: ${{ matrix.jvm }}
